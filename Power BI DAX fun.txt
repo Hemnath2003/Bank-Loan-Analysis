@@ -1,0 +1,108 @@
+BANK LOAN ANALYSIS (POWER-BI)
+
+Measures (DAX functions)
+
+>DAX funcions is nothing but the tooles/functions like sum, avg, count, calander function etc... which is used to create
+ measures.
+
+At first we are going to create a extra date table using DAX function
+1.Date Table = CALANDER(MIN(finincial_loan[issue_date]),MAX(finincial_loan[issue_date]))
+
+Now we are going to extract month from the date in new column
+2.Month = FORMAT('Date Table'[Date],"mmmm")
+
+Now we are created 2 table and both are independent (date table and finincial loan), now we are going to create a
+relationship b/w them by using data modelling.
+Now drag the date from one table and merge it with issue_date in other.
+
+3.Total Loan Application = COUNT(financial_loan[id])
+
+4.MTD Loan Application = CALCULATE(TOTALMTD([Total Loan Application],'Date table'[Date]))
+
+5.PMTD Loan Applicarion = CALCULATE([Total Loan Application], DATESMTD(DATEADD('Date table'[Date], -1,MONTH)))
+
+Month On Month
+6.MOM Loan application = ([MTD Loan Applications]-[PMTD Loan Applicarion])/[PMTD Loan Applicarion]
+
+7.Total funded Amount = Sum(financial_loan[loan_amount])
+
+8.MTD Funded Amount = CALCULATE(TOTALMTD([Total funded Amount], 'Date table'[Date]))
+
+9.PMTD Total Funded Amount = CALCULATE([Total funded Amount], DATESMTD(DATEADD('Date table'[Date], -1,MONTH)))
+
+10.MOM funded Amount = ([MTD Funded Amount]-[PMTD Total Funded Amount])/[PMTD Total Funded Amount]
+    ( add $ symbol before exicution)
+
+11.Total Amount Recieved = SUM(financial_loan[total_payment])
+    ( add $ symbol before exicution)
+
+12.MTD Total Amount Recieved = CALCULATE(TOTALMTD([Total Amount Recieved], 'Date table'[Date]))
+
+13.PMTD Total Amount Recieved = CALCULATE([Total Amount Recieved], DATESMTD(DATEADD('Date table'[Date], -1,MONTH)))
+
+14.MOM Total Amount Recieved = ([MTD Total Amount Recieved]-[PMTD Total Amount Recieved])/[PMTD Total Amount Recieved]
+
+15.Avg Interest Rate = AVERAGE(financial_loan[int_rate])
+
+16.MTD Avg Interest Rate = CALCULATE(TOTALMTD([Avg Interest Rate], 'Date table'[Date]))
+
+17.PMTD Avg Interest Rate = CALCULATE([Avg Interest Rate], DATESMTD(DATEADD('Date table'[Date], -1,MONTH)))
+
+18.MOM Avg Interest rate = ([MTD Avg Interest Rate]-[PMTD Avg Interest Rate])/[PMTD Avg Interest Rate]
+
+19.Avg DTI = AVERAGE(financial_loan[dti])
+
+20.MTD Avg DTI = CALCULATE(TOTALMTD([Avg DTI], 'Date table'[Date]))
+
+21.PMTD AVg Interest Rate = CALCULATE([Avg Interest Rate], DATESMTD(DATEADD('Date table'[Date], -1,MONTH)))
+
+22.PMTDAvg DTI = CALCULATE([Avg DTI], DATESMTD(DATEADD('Date table'[Date], -1,MONTH)))
+
+23.MOM Avg DTI = ([MTD Avg DTI]-[PMTD Avg DTI])/[PMTD Avg DTI]
+
+>Create a new group with respect to loan ststus.There are 3 valiuse inside loan status called current, fully paid and
+ charged off which is classified into good loan and bad loan.
+
+* Format printer in the home button is used to match with same colour*
+
+GOOD LOAN ISSUED :
+24.Good Loan % = (CALCULATE([Total Loan Application], financial_loan[Good vs Bad Loan] = "Good Loan"))
+/[Total Loan Application]
+
+25.Good Loan Application = CALCULATE([Total Loan Application], financial_loan[Good vs Bad Loan] ="Good Loan")
+
+26.Good Loan Funded Amount = CALCULATE([Total funded Amount], financial_loan[Good vs Bad Loan] ="Good Loan")
+
+27.Good Loan Recieved Amount = CALCULATE([Total Amount Recieved], financial_loan[Good vs Bad Loan] ="Good Loan")
+
+BAD LOAN ISSUED :
+28.Bad Loan % = (CALCULATE([Total Loan Application], financial_loan[Good vs Bad Loan] = "Bad Loan"))
+/[Total Loan Application]
+
+29.Bad Loan Application = CALCULATE([Total Loan Application], financial_loan[Good vs Bad Loan] ="Bad Loan")
+
+30.Bad Loan Funded Amount = CALCULATE([Total funded Amount], financial_loan[Good vs Bad Loan] ="Bad Loan")
+
+31.Bad Loan Recieved Amount = CALCULATE([Total Amount Recieved], financial_loan[Good vs Bad Loan] ="Bad Loan")
+
+> Creating slizer using address_state
+
+DASHBOAD 2 (OVERVIEW)
+
+Since the y axis and x axis is not changing based on filter we are going to create field parameter for that
+s1) Go to modeling near home tab
+s2) Click new parameter option and click field parameter.
+s3) After creating add it on Y axis of graph to change.
+
+Creating month number in date table
+32.Month number = MONTH('Date table'[Date])
+
+INTERVIEW QUESTION
+How will you sort months from jan to dec, since it is customized {time=(3:38:44)}
+
+>Mean while if if click Total funded amont by term (donut chart) the values are not properly changing in other charts
+ so 
+ s1) Select that particular chart and go to format
+ s2) click edit interaction
+ s3) select each chart and click filter 
+    for more watch {3:56:17}
